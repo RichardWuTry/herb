@@ -1,0 +1,61 @@
+html, body, textarea, div, span, pre, input, aside, section, nav, header, footer, form {
+	font: 14px/1.4 "Microsoft Yahei","微软雅黑","Helvetica Neue",Arial,"Liberation Sans",FreeSans,sans-serif;
+	margin: 0;
+	padding: 0;
+}
+
+#content{
+	margin: 0 auto;
+	width: 960px;
+}
+
+td img, th img{
+	vertical-align: middle;
+}
+
+aside {
+	float: left;
+}
+
+.radius {
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	-ms-border-radius: 4px;
+	-o-border-radius: 4px;
+	border-radius: 4px;
+}
+
+.shadow {
+	-moz-box-shadow: 5px 5px 3px #888;
+	-webkit-box-shadow: 5px 5px 3px #888;
+	box-shadow: 5px 5px 3px #888;
+}
+
+.one-edge-shadow {
+	-webkit-box-shadow: 0 8px 6px -6px #ccc;
+	-moz-box-shadow: 0 8px 6px -6px #ccc;
+	box-shadow: 0 8px 6px -6px #ccc;
+}
+
+.hide {
+	display: none;
+}
+
+input[type='button'], input[type='submit'], input[type='reset'] {
+	cursor: pointer;
+}
+
+a {
+	text-decoration: none;
+}
+
+#helpMsg {
+	padding: 6px 15px;
+	background-color: #FFE6E6;
+	color: #FF0000;
+}
+
+
+
+
+
