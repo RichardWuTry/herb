@@ -1,0 +1,127 @@
+<include file="./Tpl/Public/headstart.html" />
+<title>Login</title>
+<link rel="stylesheet" href="__PUBLIC__/css/common.css" />
+<style>
+	.login_form_wrapper {
+		margin: 5em auto;
+		width: 31em;
+	}
+	
+	.login_form_wrapper h1 {
+		-moz-border-bottom-colors: none;
+		-moz-border-image: none;
+		-moz-border-left-colors: none;
+		-moz-border-right-colors: none;
+		-moz-border-top-colors: none;
+		background: -moz-linear-gradient(#829AA8, #405A6A) repeat scroll 0 0 transparent;
+		border-color: #677C89 #677C89 #6B808D;
+		border-radius: 3px 3px 0 0;
+		border-style: solid;
+		border-width: 1px;
+		color: #FFFFFF;
+		font-size: 16px;
+		font-weight: bold;
+		margin: 0;
+		padding: 8px 18px;
+		text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.7);
+	}
+	
+	.login_form_wrapper .formbody {
+	    background-color: #E9F1F4;
+		border-color: #E9F1F4 #D8DEE2 #D8DEE2;
+		border-radius: 0 0 3px 3px;
+		border-style: solid;
+		border-width: 1px 1px 2px;
+		overflow: hidden;
+		padding: 2em;
+	}
+	
+	.login_form_wrapper form label {
+	    color: #2F424E;
+		cursor: text;
+		display: inline-block;
+		font-size: 110%;
+		text-shadow: 0 -1px 0 rgba(100, 100, 100, 0.1);
+	}
+	
+	.login_form_wrapper form input.text {
+		font-size: 110%;
+		border: 1px solid #D8DEE2;
+		margin: 0.2em 0 1em;
+		padding: 5px;
+	}
+
+	.login_form_wrapper form input[type="submit"] {
+		-moz-border-bottom-colors: none;
+		-moz-border-image: none;
+		-moz-border-left-colors: none;
+		-moz-border-right-colors: none;
+		-moz-border-top-colors: none;
+		background: -moz-linear-gradient(white, #E1E1E1) repeat scroll 0 0 transparent;
+		border-color: -moz-use-text-color -moz-use-text-color #EBEBEB;
+		border-radius: 4px 4px 4px 4px;
+		border-style: none none solid;
+		border-width: medium medium 1px;
+		box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+		color: #333333;
+		cursor: pointer;
+		display: inline-block;
+		font-size: 12px;
+		font-weight: bold;
+		height: 34px;
+		margin-left: 1px;
+		overflow: visible;
+		padding: 0 13px;
+		position: relative;
+		text-shadow: 1px 1px 0 #FFFFFF;
+		top: 1px;
+		white-space: nowrap;
+	}
+</style>
+<script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+<script src="http://malsup.github.com/jquery.form.js"></script>
+<script>
+	$(function(){
+		$('#login_form').ajaxForm({
+			success: showResponse,
+			dataType: 'json'
+		});
+	});
+	
+	function showResponse(data) {
+		if (data.status == 0) {
+			var msg = $('#topSlideMsg');
+			msg.css('color', 'red');
+			msg.text(data.info).slideDown(function(){
+				setTimeout(function(){msg.slideUp();}, 2000);
+			});
+		} else {
+			window.location = "__APP__/Customer/search";
+		}
+	}
+</script>
+<include file="./Tpl/Public/headend_bodystart_banner.html" />
+<div id="wrapper">
+	<div id="topSlideMsg"></div>
+	<div class="login_form_wrapper">
+		<form method="post" action="__URL__/login" id="login_form">
+			<h1>Please log in</h1>
+			<div class="formbody">
+				<label for="login_field">
+					Staff Name
+					<br>
+					<input id="login_field" class="text" type="text" tabindex="1" style="width: 21em;" name="login" autocapitalize="off">
+				</label>
+				<label for="password">
+					Password
+					<br>
+					<input id="password" class="text" type="password" value="" tabindex="2" style="width: 21em;" name="password" autocomplete="disabled">
+				</label>
+					<label class="submit_btn">
+					<input type="submit" value="Log in" tabindex="3" name="commit">
+				</label>
+			</div>
+		</form>
+	</div>
+</div>
+<include file="./Tpl/Public/footer_bodyend.html" />

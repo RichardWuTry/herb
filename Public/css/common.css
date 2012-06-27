@@ -55,6 +55,19 @@ a {
 	color: #FF0000;
 }
 
+#topSlideMsg {
+	background:#fff url("../images/h80.png") repeat-x scroll 0 0;
+	border-bottom:2px solid #789;
+	padding: 13px;
+	display: none;
+	width: 100%;
+	text-align: center;
+	font-size: 130%;
+	position:fixed;
+	left:0;
+	top:0;
+}
+
 
 
 
