@@ -1,5 +1,5 @@
 <include file="./Tpl/Public/headstart.html" />
-<title>Login</title>
+<title>Create New Customer</title>
 <link rel="stylesheet" href="__PUBLIC__/css/common.css" />
 <link rel="stylesheet" href="__PUBLIC__/css/sole_form.css" />
 <script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
@@ -7,7 +7,7 @@
 <script src="__PUBLIC__/javascript/jqTools.js"></script>
 <script>
 	$(function(){
-		$('#login_form').ajaxForm({
+		$('#new_customer_form').ajaxForm({
 			success: showResponse,
 			dataType: 'json'
 		});
@@ -26,21 +26,32 @@
 <div id="wrapper">
 	<div id="topSlideMsg"></div>
 	<div class="sole_form_wrapper">
-		<form method="post" action="__URL__/login" id="login_form">
-			<h1>Please log in</h1>
+		<form method="post" action="__URL__/login" id="new_customer_form">
+			<h1>New Customer</h1>
 			<div class="formbody">
-				<label for="login_field">
-					Staff Name
+				<label for="firstname">
+					First Name
 					<br>
-					<input id="login_field" class="text" type="text" tabindex="1" style="width: 21em;" name="login" autocapitalize="off">
+					<input id="firstname" class="text" type="text" tabindex="1" style="width: 21em;" name="firstname">
 				</label>
-				<label for="password">
-					Password
+				<label for="surname">
+					Surname
 					<br>
-					<input id="password" class="text" type="password" value="" tabindex="2" style="width: 21em;" name="password" autocomplete="disabled">
+					<input id="surname" class="text" type="text" value="" tabindex="2" style="width: 21em;" name="surname">
 				</label>
-					<label class="submit_btn">
-					<input type="submit" value="Log in" tabindex="3" name="commit" class="btn">
+				<label for="phone">
+					Phone
+					<br>
+					<input id="phone" class="text" type="text" value="" tabindex="3" style="width: 21em;" name="phone">
+				</label>
+				<label for="email">
+					Email
+					<br>
+					<input id="email" class="text" type="text" value="" tabindex="4" style="width: 21em;" name="email">
+				</label>
+				<label>
+					<input type="submit" value="Save" tabindex="5" name="commit" class="btn">
+					<a href="__URL__/search" tabindex="6" class="btn">Cannel</a>
 				</label>
 			</div>
 		</form>
