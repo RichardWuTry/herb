@@ -1,3 +1,14 @@
 </head>
 <body>
-	<header></header>
+	<header>
+		<if condition="isset($staff_name)">
+			<ul class="head_panel">
+				<li class="head_panel_item">
+					<span>{$staff_name}</span>
+				</li>
+				<li class="head_panel_item">
+					<a href="__APP__/Staff/logout/">Logout</a>
+				</li>
+			</ul>
+		</if>
+	</header>
