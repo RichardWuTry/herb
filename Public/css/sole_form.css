@@ -6,7 +6,6 @@
 .sole_form_wrapper h1 {
 	border-color: #6b808d;
 	background-color: #6b808d;
-	border-color: #677C89 #677C89 #6B808D;
 	border-radius: 3px 3px 0 0;
 	border-style: solid;
 	border-width: 1px;
@@ -44,15 +43,14 @@
 }
 
 .sole_form_wrapper form .btn {
-	background: -moz-linear-gradient(white, #E1E1E1) repeat scroll 0 0 transparent;
-	border-color: -moz-use-text-color -moz-use-text-color #EBEBEB;
+	background-color: #F0F0F0;
+	border-color: #EBEBEB;
 	border-radius: 4px 4px 4px 4px;
 	border-style: none none solid;
 	border-width: medium medium 1px;
 	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 	color: #333333;
 	cursor: pointer;
-	display: inline-block;
 	font-size: 12px;
 	font-weight: bold;
 	height: 34px;
@@ -62,5 +60,4 @@
 	position: relative;
 	text-shadow: 1px 1px 0 #FFFFFF;
 	top: 1px;
-	white-space: nowrap;
 }

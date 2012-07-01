@@ -7,14 +7,18 @@ class IndexAction extends Action {
 	
 	public function login(){
 		if (!$this->isPost()) {
-			redirect_to(__URL__.'/index');
+			redirect(__URL__.'/index');
 		}
 		
 		$staff_name = $_POST['login'];
 		$password = $_POST['password'];
 		
 		$Staff = M('Staff');
-		if ($Staff->where("staff_name = '$staff_name' and password = '$password'")->find()) {
+		if ($currStaff = $Staff
+						->where("staff_name = '$staff_name' and password = '$password'")
+						->field('staff_id')
+						->find()) {
+			setSessionCookie($currStaff['staff_id'], $staff_name, 1);
 			$this->success();
 		} else {
 			$this->error('Incorrect name or password.');

@@ -4,21 +4,49 @@
 <link rel="stylesheet" href="__PUBLIC__/css/sole_form.css" />
 <script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
 <script src="http://malsup.github.com/jquery.form.js"></script>
+<script src="__PUBLIC__/javascript/InputValidate.js"></script>
 <script src="__PUBLIC__/javascript/jqTools.js"></script>
 <script>
+	var msg;
+
 	$(function(){
+		msg = $('#topSlideMsg');
+	
 		$('#new_customer_form').ajaxForm({
+			beforeSubmit: checkForm,
 			success: showResponse,
 			dataType: 'json'
 		});
+		
+		$('#cancel').click(function(){
+			window.location = "__URL__/search";
+		});
 	});
+	
+	function checkForm() {
+		var isValid = true;
+		
+		$('.non_empty').each(function(){
+			isValid = validateNonEmpty(this, msg[0], this.id + ' cannot be empty', '');
+			return isValid;
+		});
+		
+		if (isValid) {
+			var phone_email = $('#phone').val() + $('#email').val();
+			isValid = validateRegEx(/.+/, phone_email, msg[0], 'Please enter Phone or Email', '');
+		}		
+		
+		if (!isValid) {
+			slideBox(msg, 2000, 'red');
+		}
+		return isValid;
+	}
 	
 	function showResponse(data) {
 		if (data.status == 0) {
-			var msg = $('#topSlideMsg');
 			slideBox(msg.text(data.info), 2000, 'red');
 		} else {
-			window.location = "__APP__/Customer/search";
+			window.location = "__APP__/Recipe/add/id/" + data.info;
 		}
 	}
 </script>
@@ -26,18 +54,20 @@
 <div id="wrapper">
 	<div id="topSlideMsg"></div>
 	<div class="sole_form_wrapper">
-		<form method="post" action="__URL__/login" id="new_customer_form">
+		<form method="post" action="__URL__/addCustomer" id="new_customer_form">
 			<h1>New Customer</h1>
 			<div class="formbody">
-				<label for="firstname">
+				<input class="hide" name="create_by" value="{$staff_name}" />
+				<input class="hide" name="modify_by" value="{$staff_name}" />
+				<label for="Firstname">
 					First Name
 					<br>
-					<input id="firstname" class="text" type="text" tabindex="1" style="width: 21em;" name="firstname">
+					<input id="Firstname" class="text non_empty" type="text" tabindex="1" style="width: 21em;" name="firstname">
 				</label>
-				<label for="surname">
+				<label for="Surname">
 					Surname
 					<br>
-					<input id="surname" class="text" type="text" value="" tabindex="2" style="width: 21em;" name="surname">
+					<input id="Surname" class="text non_empty" type="text" value="" tabindex="2" style="width: 21em;" name="surname">
 				</label>
 				<label for="phone">
 					Phone
@@ -50,8 +80,8 @@
 					<input id="email" class="text" type="text" value="" tabindex="4" style="width: 21em;" name="email">
 				</label>
 				<label>
-					<input type="submit" value="Save" tabindex="5" name="commit" class="btn">
-					<a href="__URL__/search" tabindex="6" class="btn">Cannel</a>
+					<input type="submit" value="Save" tabindex="5" name="commit" class="btn" />
+					<input type="button" value="Cancel" tabindex="6" id="cancel" class="btn" />
 				</label>
 			</div>
 		</form>

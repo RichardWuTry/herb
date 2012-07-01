@@ -6,7 +6,11 @@
 <script src="http://malsup.github.com/jquery.form.js"></script>
 <script src="__PUBLIC__/javascript/jqTools.js"></script>
 <script>
+	var msg;
+	
 	$(function(){
+		msg = $('#topSlideMsg');
+	
 		$('#login_form').ajaxForm({
 			success: showResponse,
 			dataType: 'json'
@@ -15,7 +19,6 @@
 	
 	function showResponse(data) {
 		if (data.status == 0) {
-			var msg = $('#topSlideMsg');
 			slideBox(msg.text(data.info), 2000, 'red');
 		} else {
 			window.location = "__APP__/Customer/search";
