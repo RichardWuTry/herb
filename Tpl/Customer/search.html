@@ -1,0 +1,96 @@
+<include file="./Tpl/Public/headstart.html" />
+<title>Create New Customer</title>
+<link rel="stylesheet" href="__PUBLIC__/css/common.css" />
+<link rel="stylesheet" href="__PUBLIC__/css/panel.css" />
+<link rel="stylesheet" href="__PUBLIC__/css/head_panel.TopRightBtn.css" />
+<style>
+	header, #wrapper {
+		margin: 0 auto;
+		width: 960px;
+	}
+	
+	header {
+		padding-bottom: 30px;
+	}
+	
+	#wrapper {
+		clear: both;
+	}
+</style>
+<script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+<script src="http://malsup.github.com/jquery.form.js"></script>
+<script src="__PUBLIC__/javascript/InputValidate.js"></script>
+<script src="__PUBLIC__/javascript/jqTools.js"></script>
+<script>
+	var msg;
+
+	$(function(){
+		msg = $('#topSlideMsg');
+	
+		$('#search_customer_form').ajaxForm({
+			success: showResponse,
+			dataType: 'json'
+		});
+	});
+	
+	function showResponse(data) {
+		if (data.status == 1) {
+			window.location = "__APP__/Recipe/add/id/" + data.info;
+		} else {
+			slideBox(msg.text(data.info), 2000, 'red');
+		}
+	}
+</script>
+<include file="./Tpl/Public/headend_bodystart_banner.html" />
+<div id="wrapper">
+	<div id="topSlideMsg"></div>
+	<div class="panel_wrapper">
+		<form method="post" action="__URL__/searchCustomer" id="search_customer_form">
+			<h1>Customer Search</h1>
+			<div class="panelbody">
+				<div class="main">
+					<label for="Firstname">
+						First Name
+						<input id="Firstname" class="text" type="text" tabindex="1" style="width:120px; margin-right:10px;" name="firstname">
+					</label>
+					<label for="Surname">
+						Surname
+						<input id="Surname" class="text" type="text" value="" tabindex="2" style="width:120px; margin-right:10px;" name="surname">
+					</label>
+					<label for="phone">
+						Phone
+						<input id="phone" class="text" type="text" value="" tabindex="3" style="width:186px; margin-right:10px;" name="phone">
+					</label>
+					<label for="email">
+						Email
+						<input id="email" class="text" type="text" value="" tabindex="4" style="width:186px;" name="email">
+					</label>
+				</div>
+				<div class="ctrl">
+					<label class="float_left" style="margin-top:5px;">
+						<input type="checkbox" name="include_inactive" value="1" tabindex="5"/>
+						Include Inactive
+					</label>
+					<label class="float_right">
+						<input type="submit" value="Search" tabindex="5" name="commit" class="btn" />
+					</label>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="panel_wrapper">
+		<h2>Customer List</h2>
+		<div class="panelbody">
+			<table>
+				<tr>
+					<th class="hide">customer_id</th>
+					<th>First Name</th>
+					<th>Surname</th>
+					<th>Phone</th>
+					<th>Email</th>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>
+<include file="./Tpl/Public/footer_bodyend.html" />

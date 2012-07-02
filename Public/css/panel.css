@@ -1,0 +1,73 @@
+.panel_wrapper {
+	margin: 20px auto;
+}
+
+.panel_wrapper h1, .panel_wrapper h2, .panel_wrapper h3 {
+	border-color: #6b808d;
+	background-color: #6b808d;
+	border-radius: 3px 3px 0 0;
+	border-style: solid;
+	border-width: 1px;
+	color: #FFFFFF;
+	font-size: 16px;
+	font-weight: bold;
+	margin: 0;
+	padding: 8px 18px;
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.7);
+}
+
+.panel_wrapper .panelbody {
+	background-color: #E9F1F4;
+	border-color: #E9F1F4 #D8DEE2 #D8DEE2;
+	border-radius: 0 0 3px 3px;
+	border-style: solid;
+	border-width: 1px 1px 2px;
+	overflow: hidden;
+	padding: 1em;
+}
+
+.panelbody .ctrl {
+	margin-top: 10px;
+}
+
+.panel_wrapper label {
+	color: #2F424E;
+	cursor: text;
+	display: inline-block;
+	text-shadow: 0 -1px 0 rgba(100, 100, 100, 0.1);
+}
+
+.panel_wrapper input.text {
+	border: 1px solid #D8DEE2;
+	padding: 5px;
+}
+
+.panel_wrapper .btn {
+	background-color: #F0F0F0;
+	border-color: #EBEBEB;
+	border-radius: 4px 4px 4px 4px;
+	border-style: none none solid;
+	border-width: medium medium 1px;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+	color: #333333;
+	cursor: pointer;
+	font-size: 12px;
+	font-weight: bold;
+	height: 34px;
+	margin-left: 1px;
+	overflow: visible;
+	padding: 0 13px;
+	position: relative;
+	text-shadow: 1px 1px 0 #FFFFFF;
+	top: 1px;
+}
+
+.panelbody table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.panelbody th, .panelbody td {
+	border-style: dotted;
+	border-width: 1px;
+}

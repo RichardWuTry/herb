@@ -68,6 +68,14 @@ a {
 	top:0;
 }
 
+.float_right {
+	float: right;
+}
+
+.float_left {
+	float: left;
+}
+
 
 
 
