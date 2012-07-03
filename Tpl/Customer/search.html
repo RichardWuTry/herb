@@ -31,11 +31,37 @@
 			success: showResponse,
 			dataType: 'json'
 		});
+		
+		$('#customerList').on('click', 'tr', function(){
+			var custId = $(this).children('.custId').text();
+			window.location = "__APP__/Recipe/list/id/" + custId;
+		});
+			
+		$('#newCust').click(function(){
+			window.location = "__URL__/add";
+		});
 	});
 	
 	function showResponse(data) {
 		if (data.status == 1) {
-			window.location = "__APP__/Recipe/add/id/" + data.info;
+			var custs = data.data;
+			if (custs.length > 0) {
+				$('#customerList td').remove();
+			}
+			
+			for (var i = 0; i < custs.length; i++) {
+				var tr = $('<tr>');
+				if (custs[i]['is_active'] == '0') {
+					tr.addClass('inactive');
+				}
+				tr.append('<td class="hide custId">'+custs[i]['customer_id']+'</td>');
+				tr.append('<td>'+custs[i]['firstname']+'</td>');
+				tr.append('<td>'+custs[i]['surname']+'</td>');
+				tr.append('<td>'+custs[i]['phone']+'</td>');
+				tr.append('<td>'+custs[i]['email']+'</td>');
+				
+				$('#customerList').append(tr);
+			}
 		} else {
 			slideBox(msg.text(data.info), 2000, 'red');
 		}
@@ -67,7 +93,7 @@
 					</label>
 				</div>
 				<div class="ctrl">
-					<label class="float_left" style="margin-top:5px;">
+					<label class="float_left" style="margin-top:10px;">
 						<input type="checkbox" name="include_inactive" value="1" tabindex="5"/>
 						Include Inactive
 					</label>
@@ -81,7 +107,7 @@
 	<div class="panel_wrapper">
 		<h2>Customer List</h2>
 		<div class="panelbody">
-			<table>
+			<table id="customerList">
 				<tr>
 					<th class="hide">customer_id</th>
 					<th>First Name</th>
@@ -90,7 +116,15 @@
 					<th>Email</th>
 				</tr>
 			</table>
-		</div>
+			<div class="ctrl">
+				<label class="float_left" style="margin-top:10px;">
+					Not on list?
+				</label>
+				<label class="float_right">					
+					<input id="newCust" type="button" value="Create New Customer" tabindex="6" class="btn" />
+				</label>
+			</div>
+		</div>		
 	</div>
 </div>
 <include file="./Tpl/Public/footer_bodyend.html" />

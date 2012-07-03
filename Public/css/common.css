@@ -75,6 +75,14 @@ a {
 .float_left {
 	float: left;
 }
+	
+table th, table td {
+	padding: 5px 10px;
+}
+
+.inactive {
+	background-color: lightgray;
+}
 
 
 

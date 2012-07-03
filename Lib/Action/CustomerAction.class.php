@@ -54,7 +54,7 @@ class CustomerAction extends Action {
 			
 			if (!empty($_POST['email'])) {
 				$email = $_POST['email'];
-				$condition_email = "email like '%email%'";
+				$condition_email = "email like '%$email%'";
 			}
 			
 			if (empty($_POST['include_inactive'])) {
@@ -64,17 +64,33 @@ class CustomerAction extends Action {
 			$allAndCondition = (empty($condition_firstname) ? "" : " and ".$condition_firstname)
 							.(empty($condition_surname) ? "" : " and ".$condition_surname)
 							.(empty($condition_phone) ? "" : " and ".$condition_phone)
-							.(empty($condition_email) ? "" : " and ".$condition_email);
+							.(empty($condition_email) ? "" : " and ".$condition_email);			
+			$allAndCondition = substr($allAndCondition, 0, 4) == " and" 
+								? substr($allAndCondition, 4)
+								: $allAndCondition;
+			$allOrCondition = str_replace("and", "or", $allAndCondition);
 			
+			if (!empty($condition_is_active)) {
+				if (!empty($allAndCondition)) {
+					$allAndCondition = $allAndCondition." and ".$condition_is_active;
+					$allOrCondition = "(".$allOrCondition.") and ".$condition_is_active;
+				} else {
+					$allAndCondition = $condition_is_active;
+					$allOrCondition = $condition_is_active;
+				}
+			}
 			
 			$queryScript1 = "select customer_id, firstname, surname, phone, email, is_active
-							from customer
-							where "
-							
-			
-			
-							
-			$this->error($condition_firstname);
+							from customer "
+							.(empty($allAndCondition) ? "" : " where ".$allAndCondition);
+			$queryScript2 = "select customer_id, firstname, surname, phone, email, is_active
+							from customer "
+							.(empty($allOrCondition) ? "" : " where ".$allOrCondition);
+			$finalScript = $queryScript1." union ".$queryScript2;
+						
+			$Model = M();
+			$customer = $Model->query($finalScript);
+			$this->ajaxReturn($customer, '', 1);
 		}
 	}
 }
