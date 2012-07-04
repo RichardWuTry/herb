@@ -1,0 +1,140 @@
+<include file="./Tpl/Public/headstart.html" />
+<title>Create New Recipe</title>
+<link rel="stylesheet" href="__PUBLIC__/css/common.css" />
+<link rel="stylesheet" href="__PUBLIC__/css/panel.css" />
+<link rel="stylesheet" href="__PUBLIC__/css/head_panel.TopRightBtn.css" />
+<style>
+	header, #wrapper {
+		margin: 0 auto;
+		width: 960px;
+	}
+	
+	header {
+		padding-bottom: 30px;
+	}
+	
+	#wrapper {
+		clear: both;
+	}
+	
+	a {
+		color: #FFFFFF;
+		text-decoration:underline;
+	}
+</style>
+<script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+<script src="http://malsup.github.com/jquery.form.js"></script>
+<script src="__PUBLIC__/javascript/InputValidate.js"></script>
+<script src="__PUBLIC__/javascript/jqTools.js"></script>
+<script>
+	var msg;
+
+	$(function(){
+		msg = $('#topSlideMsg');
+	
+		$('#search_customer_form').ajaxForm({
+			success: showResponse,
+			dataType: 'json'
+		});
+		
+		$('#customerList').on('click', 'tr', function(){
+			var custId = $(this).children('.custId').text();
+			window.location = "__APP__/Recipe/list/id/" + custId;
+		});
+			
+		$('#newCust').click(function(){
+			window.location = "__URL__/add";
+		});
+		
+		<if condition="$customer.is_active eq '0'">
+			$('#edit_customer_form input').attr('disabled', 'disabled');
+		</if>
+	});
+	
+	function showResponse(data) {
+		if (data.status == 1) {
+			var custs = data.data;
+			if (custs.length > 0) {
+				$('#customerList td').remove();
+			}
+			
+			for (var i = 0; i < custs.length; i++) {
+				var tr = $('<tr>');
+				if (custs[i]['is_active'] == '0') {
+					tr.addClass('inactive');
+				}
+				tr.append('<td class="hide custId">'+custs[i]['customer_id']+'</td>');
+				tr.append('<td>'+custs[i]['firstname']+'</td>');
+				tr.append('<td>'+custs[i]['surname']+'</td>');
+				tr.append('<td>'+custs[i]['phone']+'</td>');
+				tr.append('<td>'+custs[i]['email']+'</td>');
+				
+				$('#customerList').append(tr);
+			}
+		} else {
+			slideBox(msg.text(data.info), 2000, 'red');
+		}
+	}
+</script>
+<include file="./Tpl/Public/headend_bodystart_banner.html" />
+<div id="wrapper">
+	<div id="topSlideMsg"></div>
+	<div class="panel_wrapper">
+		<form method="post" action="__URL__/searchCustomer" id="edit_customer_form">
+			<h2>Customer<a style="margin-left: 20px;" href="__URL__/list/id/{$customer.customer_id}">ID:[{$customer.customer_id}]</a></h2>
+			<div class="panelbody">
+				<div class="main">
+					<label for="Firstname">
+						First Name
+						<input id="Firstname" class="text" type="text" tabindex="1" style="width:120px; margin-right:10px;" name="firstname" value="{$customer.firstname}">
+					</label>
+					<label for="Surname">
+						Surname
+						<input id="Surname" class="text" type="text" tabindex="2" style="width:120px; margin-right:10px;" name="surname" value="{$customer.surname}">
+					</label>
+					<label for="phone">
+						Phone
+						<input id="phone" class="text" type="text" tabindex="3" style="width:186px; margin-right:10px;" name="phone" value="{$customer.phone}">
+					</label>
+					<label for="email">
+						Email
+						<input id="email" class="text" type="text" tabindex="4" style="width:186px;" name="email" value="{$customer.email}">
+					</label>
+				</div>
+				<div class="ctrl">
+					<label class="float_left" style="margin-top:10px;">
+						Updated by: {$customer.modify_by}
+						Updated on: {$customer.modify_at|date="Y-m-d",###}
+					</label>
+					<label class="float_right">
+						<input type="submit" value="Save" tabindex="5" class="btn" />
+						<input type="button" value="Customer Search" tabindex="6" class="btn" />
+					</label>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="panel_wrapper">
+		<h2>Customer List</h2>
+		<div class="panelbody">
+			<table id="customerList">
+				<tr>
+					<th class="hide">customer_id</th>
+					<th>First Name</th>
+					<th>Surname</th>
+					<th>Phone</th>
+					<th>Email</th>
+				</tr>
+			</table>
+			<div class="ctrl">
+				<label class="float_left" style="margin-top:10px;">
+					Not on list?
+				</label>
+				<label class="float_right">					
+					<input id="newCust" type="button" value="Create New Customer" tabindex="6" class="btn" />
+				</label>
+			</div>
+		</div>		
+	</div>
+</div>
+<include file="./Tpl/Public/footer_bodyend.html" />
