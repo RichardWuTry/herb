@@ -17,7 +17,7 @@
 		clear: both;
 	}
 	
-	a {
+	#edit_customer_form a {
 		color: #FFFFFF;
 		text-decoration:underline;
 	}
@@ -103,8 +103,8 @@
 				</div>
 				<div class="ctrl">
 					<label class="float_left" style="margin-top:10px;">
-						Updated by: {$customer.modify_by}
-						Updated on: {$customer.modify_at|date="Y-m-d",###}
+						Updated by: [{$customer.modify_by}]
+						on: [{$customer.modify_at|strtotime|date="d/m/Y",###}]
 					</label>
 					<label class="float_right">
 						<input type="submit" value="Save" tabindex="5" class="btn" />
