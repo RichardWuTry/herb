@@ -62,6 +62,11 @@
 	top: 1px;
 }
 
+.panel_wrapper .btn[disabled='disabled'] {
+	color: lightgray;
+	cursor: default;
+}
+
 .panelbody table {
 	width: 100%;
 	border-collapse: collapse;

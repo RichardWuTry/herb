@@ -29,6 +29,21 @@ class CustomerAction extends Action {
 		}
 	}
 	
+	public function update() {
+		if ($this->isPost()) {
+			$Cust = D('Customer');
+			if ($Cust->create()) {
+				if ($Cust->save()) {
+					$this->success('Succeed save customer information');
+				} else {
+					$this->error('Failed save customer information');
+				}
+			} else {
+				$this->error($Cust->getError());
+			}
+		}
+	}
+	
 	public function search() {
 		$this->assign('staff_id', $_SESSION['user_id']);
 		$this->assign('staff_name', $_SESSION['user_name']);

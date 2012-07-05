@@ -26,24 +26,32 @@
 <script src="http://malsup.github.com/jquery.form.js"></script>
 <script src="__PUBLIC__/javascript/InputValidate.js"></script>
 <script src="__PUBLIC__/javascript/jqTools.js"></script>
+<script src="__PUBLIC__/javascript/date.format.js"></script>
 <script>
 	var msg;
 
 	$(function(){
 		msg = $('#topSlideMsg');
 	
-		$('#search_customer_form').ajaxForm({
+		$('#edit_customer_form').ajaxForm({
 			success: showResponse,
 			dataType: 'json'
 		});
-		
-		$('#customerList').on('click', 'tr', function(){
-			var custId = $(this).children('.custId').text();
-			window.location = "__APP__/Recipe/list/id/" + custId;
-		});
+
+		$('#issue').click(function(event){
+			event.preventDefault();
+			var now = new Date();
 			
-		$('#newCust').click(function(){
-			window.location = "__URL__/add";
+			$('#is_issued').val(1);
+			$('#issue_at').val(now.format("yyyy-mm-dd hh:MM:ss"));
+			$('#issue_by').val('{$staff_name}');
+			
+			var contents = $('#contents').val();
+			var issueStamp = "Issued by: [{$staff_name}]  on: [" + now.format("dd/mm/yyyy") + "]\n---------------------------------------\n\n";
+			$('#contents').val(issueStamp + contents);
+
+			
+
 		});
 		
 		<if condition="$customer.is_active eq '0'">
@@ -53,24 +61,7 @@
 	
 	function showResponse(data) {
 		if (data.status == 1) {
-			var custs = data.data;
-			if (custs.length > 0) {
-				$('#customerList td').remove();
-			}
-			
-			for (var i = 0; i < custs.length; i++) {
-				var tr = $('<tr>');
-				if (custs[i]['is_active'] == '0') {
-					tr.addClass('inactive');
-				}
-				tr.append('<td class="hide custId">'+custs[i]['customer_id']+'</td>');
-				tr.append('<td>'+custs[i]['firstname']+'</td>');
-				tr.append('<td>'+custs[i]['surname']+'</td>');
-				tr.append('<td>'+custs[i]['phone']+'</td>');
-				tr.append('<td>'+custs[i]['email']+'</td>');
-				
-				$('#customerList').append(tr);
-			}
+			slideBox(msg.text(data.info), 2000, 'green');
 		} else {
 			slideBox(msg.text(data.info), 2000, 'red');
 		}
@@ -80,13 +71,18 @@
 <div id="wrapper">
 	<div id="topSlideMsg"></div>
 	<div class="panel_wrapper">
-		<form method="post" action="__URL__/searchCustomer" id="edit_customer_form">
+		<form method="post" action="__APP__/Customer/update" id="edit_customer_form">
+			<div class="float_right" style="margin:10px 15px 0 0; color:#FFFFFF">
+				Updated by: [{$customer.modify_by}]
+				on: [{$customer.modify_at|strtotime|date="d/m/Y",###}]
+			</div>
 			<h2>Customer<a style="margin-left: 20px;" href="__URL__/list/id/{$customer.customer_id}">ID:[{$customer.customer_id}]</a></h2>
 			<div class="panelbody">
 				<div class="main">
 					<label for="Firstname">
 						First Name
 						<input id="Firstname" class="text" type="text" tabindex="1" style="width:120px; margin-right:10px;" name="firstname" value="{$customer.firstname}">
+						<input class="hide" type="text" name="customer_id" value="{$customer.customer_id}" />
 					</label>
 					<label for="Surname">
 						Surname
@@ -101,11 +97,7 @@
 						<input id="email" class="text" type="text" tabindex="4" style="width:186px;" name="email" value="{$customer.email}">
 					</label>
 				</div>
-				<div class="ctrl">
-					<label class="float_left" style="margin-top:10px;">
-						Updated by: [{$customer.modify_by}]
-						on: [{$customer.modify_at|strtotime|date="d/m/Y",###}]
-					</label>
+				<div class="ctrl">					
 					<label class="float_right">
 						<input type="submit" value="Save" tabindex="5" class="btn" />
 						<input type="button" value="Customer Search" tabindex="6" class="btn" />
@@ -115,26 +107,27 @@
 		</form>
 	</div>
 	<div class="panel_wrapper">
-		<h2>Customer List</h2>
-		<div class="panelbody">
-			<table id="customerList">
-				<tr>
-					<th class="hide">customer_id</th>
-					<th>First Name</th>
-					<th>Surname</th>
-					<th>Phone</th>
-					<th>Email</th>
-				</tr>
-			</table>
-			<div class="ctrl">
-				<label class="float_left" style="margin-top:10px;">
-					Not on list?
-				</label>
-				<label class="float_right">					
-					<input id="newCust" type="button" value="Create New Customer" tabindex="6" class="btn" />
-				</label>
+		<form method="post" action="__URL__/addRecipe" id="add_recipe_form">
+			<h1>Recipe</h1>
+			<div class="panelbody">
+				<div class="main">
+					<textarea style="width:100%;height:200px;" name="contents" id="contents"></textarea>
+				</div>
+				<div class="ctrl">
+					<label class="float_right">					
+						<input type="submit" value="Save" tabindex="7" class="btn" />
+						<input type="button" value="Print" tabindex="8" class="btn" id="print" />
+						<input type="button" value="Issue" tabindex="9" class="btn" id="issue" />
+							<input type="text" value="0" name="is_issued" id="is_issued" class="hide" />
+							<input type="text" value="" name="issue_at" id="issue_at" class="hide" />
+							<input type="text" value="" name="issue_by" id="issue_by" class="hide" />
+						<input type="button" value="Inactive" tabindex="10" class="btn" id="inactive" />
+							<input type="text" value="1" name="is_active" id="is_active" class="hide" />
+						<input type="button" value="Copy into a new recipe" tabindex="11" class="btn" disabled="disabled" />
+					</label>
+				</div>
 			</div>
-		</div>		
+		</form>
 	</div>
 </div>
 <include file="./Tpl/Public/footer_bodyend.html" />
