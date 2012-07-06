@@ -40,8 +40,81 @@ class RecipeAction extends Action {
 		}
 	}
 	
+	public function addRecipe() {
+		if ($this->isPost()) {
+			$Recipe = D('Recipe');
+			if ($Recipe->create()) {
+				$Recipe->create_by = $_SESSION['user_name'];
+				$Recipe->modify_by = $_SESSION['user_name'];
+				if ($recipe_id = $Recipe->add()) {
+					redirect(__URL__."/edit/rid/$recipe_id");
+				}
+			}
+		}
+	}
+	
 	public function edit() {
-		
+		if (isset($_GET['rid'])) {
+			$recipe_id = $_GET['rid'];
+			$Model = M();
+			if ($record = $Model->query("select
+											c.customer_id,
+											c.firstname,
+											c.surname,
+											c.phone,
+											c.email,
+											c.is_active as c_is_active,
+											c.modify_at as c_modify_at,
+											c.modify_by as c_modify_by,
+											
+											r.recipe_id,
+											r.contents,
+											r.is_issued,
+											r.is_active as r_is_active,
+											r.issue_at,
+											r.issue_by,
+											r.modify_at as r_modify_at,
+											r.modify_by as r_modify_by,
+											
+											rc.recipe_comment_id,
+											rc.comment,
+											rc.modify_at as rc_modify_at,
+											rc.modify_by as rc_modify_by
+										from
+											customer c
+											inner join
+											recipe r
+											on
+												c.customer_id = r.customer_id
+											left join
+											recipe_comment rc
+											on
+												r.recipe_id = rc.recipe_id
+										where
+											r.recipe_id = $recipe_id
+										limit 1")) {
+				$this->assign('record', $record[0]);
+				$this->assign('staff_id', $_SESSION['user_id']);
+				$this->assign('staff_name', $_SESSION['user_name']);
+				$this->display();
+			}
+		}
+	}
+	
+	public function editRecipe() {
+		if ($this->isPost()) {
+			$Recipe = D('Recipe');
+			if ($Recipe->create()) {
+				$Recipe->modify_by = $_SESSION['user_name'];
+				if ($Recipe->save()) {
+					$this->success('Recipe update succeed');
+				} else {
+					$this->error('Recipe update failed');
+				}
+			} else {
+				$this->error($Recipe->getError());
+			}
+		}
 	}
 }
 ?>
