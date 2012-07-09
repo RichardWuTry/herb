@@ -1,5 +1,5 @@
 <include file="./Tpl/Public/headstart.html" />
-<title>Create New Recipe</title>
+<title>Customer & Recipe Preview</title>
 <link rel="stylesheet" href="__PUBLIC__/css/common.css" />
 <link rel="stylesheet" href="__PUBLIC__/css/panel.css" />
 <link rel="stylesheet" href="__PUBLIC__/css/head_panel.TopRightBtn.css" />
@@ -21,6 +21,14 @@
 		color: #FFFFFF;
 		text-decoration:underline;
 	}
+	
+	#recipeList td {
+		cursor: pointer;
+	}
+	
+	tr.selected {
+		background-color: lightyellow;
+	}
 </style>
 <script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
 <script src="http://malsup.github.com/jquery.form.js"></script>
@@ -37,22 +45,29 @@
 			success: showResponse,
 			dataType: 'json'
 		});
-
-		$('#issue').click(function(event){
-			var now = new Date();
-			
-			$('#is_issued').val(1);
-			$('#issue_at').val(now.format("yyyy-mm-dd hh:MM:ss"));
-			$('#issue_by').val('{$staff_name}');
-			
-			var contents = $('#contents').val();
-			var issueStamp = "Issued by: [{$staff_name}]  on: [" + now.format("dd/mm/yyyy") + "]\n---------------------------------------\n\n";
-			$('#contents').val(issueStamp + contents);
-		});
 		
 		$('#customer_search').click(function(event){
 			event.preventDefault();
 			window.location = "__APP__/Customer/search";
+		});
+		
+		$('#recipeList tr.recipe_row').click(function(){
+			$('#recipeList tr').removeClass('selected');
+			$(this).addClass('selected');
+			
+			$('#contents').val($(this).children('td.content:first').text());
+		});
+		
+		$('#newRecipe').click(function(){
+			window.location = "__URL__/add/cid/{$customer.customer_id}";
+		});
+		
+		$('#select').click(function(){
+			var selectedTr = $('#recipeList tr.selected');
+			if (typeof selectedTr[0] !== 'undefined') {
+				var recipeId = selectedTr.children('td:first').text();
+				window.location = "__URL__/edit/rid/"+recipeId;
+			}
 		});
 		
 		<if condition="$customer.is_active eq '0'">
@@ -71,13 +86,13 @@
 <include file="./Tpl/Public/headend_bodystart_banner.html" />
 <div id="wrapper">
 	<div id="topSlideMsg"></div>
-	<div class="panel_wrapper">
+	<div class="panel_wrapper" style="margin-bottom: 0;">
 		<form method="post" action="__APP__/Customer/update" id="edit_customer_form">
 			<div class="float_right" style="margin:10px 15px 0 0; color:#FFFFFF">
 				Updated by: [{$customer.modify_by}]
 				on: [{$customer.modify_at|strtotime|date="d/m/Y",###}]
 			</div>
-			<h2>Customer<a style="margin-left: 20px;" href="__URL__/lists/id/{$customer.customer_id}">ID:[{$customer.customer_id}]</a></h2>
+			<h1>Customer<a style="margin-left: 20px;" href="__URL__/lists/id/{$customer.customer_id}">ID:[{$customer.customer_id}]</a></h1>
 			<div class="panelbody">
 				<div class="main">
 					<label for="Firstname">
@@ -107,29 +122,58 @@
 			</div>
 		</form>
 	</div>
-	<div class="panel_wrapper">
-		<form method="post" action="__URL__/addRecipe" id="add_recipe_form">
-			<h1>Recipe</h1>
-			<div class="panelbody">
-				<div class="main">
-					<input class="hide" type="text" name="customer_id" value="{$customer.customer_id}" />
-					<textarea style="width:100%;height:200px;" name="contents" id="contents"></textarea>
-				</div>
-				<div class="ctrl">
-					<label class="float_right">					
-						<input type="submit" value="Save" tabindex="7" class="btn" />
-						<input type="button" value="Print" tabindex="8" class="btn" id="print" />
-						<input type="button" value="Issue" tabindex="9" class="btn" id="issue" />
-							<input type="text" value="0" name="is_issued" id="is_issued" class="hide" />
-							<input type="text" value="" name="issue_at" id="issue_at" class="hide" />
-							<input type="text" value="" name="issue_by" id="issue_by" class="hide" />
-						<input type="button" value="Inactive" tabindex="10" class="btn" id="inactive" disabled="disabled" />
-							<input type="text" value="1" name="is_active" id="is_active" class="hide" />
-						<input type="button" value="Copy into a new recipe" tabindex="11" class="btn" disabled="disabled" />
-					</label>
-				</div>
+	<div class="panel_wrapper" style="float:left; width: 450px;">
+		<h2>Recipe List</h2>
+		<div class="panelbody" style="max-height:350px;">
+			<table id="recipeList">
+				<tr>
+					<th class="hide">recipe_id</th>
+					<th>Last updated on</th>
+					<th>By</th>
+					<th>Issued?</th>
+					<th class="hide">contents</th>
+				</tr>
+		<volist name="recipes" id="r">
+			<if condition="$r.is_active eq '0'">
+				<tr class="inactive recipe_row">
+			<else />
+				<tr class="recipe_row">
+			</if>
+					<td class="hide">{$r.recipe_id}</td>
+					<td>{$r.modify_at|strtotime|date="d/m/Y",###}</td>
+					<td>{$r.modify_by}</td>
+					<td>
+						<if condition="$r.is_issued eq '1'">
+							Yes
+						<else />
+							No
+						</if>
+					</td>
+					<td class="hide content">
+						{$r.contents}
+					</td>
+				</tr>
+		</volist>
+			</table>
+			<div class="ctrl">
+				<label class="float_right">					
+					<input type="button" value="Create New Recipe" tabindex="7" class="btn" id="newRecipe" />					
+				</label>
 			</div>
-		</form>
+		</div>
+	</div>
+	<div class="panel_wrapper" style="float:right; width: 495px;">
+		<h2>Preview</h2>
+		<div class="panelbody">
+			<div class="main">
+				<textarea style="width:100%;height:300px;background-color:#FFFFFF;" disabled="disabled" id="contents"></textarea>
+			</div>
+			<div class="ctrl">
+				<label class="float_right">
+					<input type="button" value="Select" tabindex="8" class="btn" id="select" />
+				</label>
+			</div>
+		</div>
 	</div>
 </div>
 <include file="./Tpl/Public/footer_bodyend.html" />

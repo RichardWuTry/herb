@@ -16,6 +16,10 @@
 	#wrapper {
 		clear: both;
 	}
+	
+	#customerList td {
+		cursor: pointer;
+	}
 </style>
 <script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
 <script src="http://malsup.github.com/jquery.form.js"></script>
@@ -34,7 +38,7 @@
 		
 		$('#customerList').on('click', 'tr', function(){
 			var custId = $(this).children('.custId').text();
-			window.location = "__APP__/Recipe/list/id/" + custId;
+			window.location = "__APP__/Recipe/lists/id/" + custId;
 		});
 			
 		$('#newCust').click(function(){

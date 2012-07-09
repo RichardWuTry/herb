@@ -30,7 +30,8 @@
 			dataType: 'json'
 		});
 		
-		$('#cancel').click(function(){
+		$('#cancel').click(function(event){
+			event.preventDefault();
 			window.location = "__URL__/search";
 		});
 	});
@@ -58,7 +59,7 @@
 		if (data.status == 0) {
 			slideBox(msg.text(data.info), 2000, 'red');
 		} else {
-			window.location = "__APP__/Recipe/add/id/" + data.info;
+			window.location = "__APP__/Recipe/add/cid/" + data.info;
 		}
 	}
 </script>

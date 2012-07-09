@@ -11,6 +11,24 @@ class RecipeAction extends Action {
 	public function lists() {
 		if (isset($_GET['id'])) {
 			$customer_id = $_GET['id'];
+			$Cust = M('Customer');
+			if ($customer = $Cust
+							->where("customer_id = $customer_id")
+							->find()) {
+				$this->assign('customer', $customer);
+				$this->assign('staff_id', $_SESSION['user_id']);
+				$this->assign('staff_name', $_SESSION['user_name']);
+				
+				$Recipe = M('Recipe');
+				if ($recipes = $Recipe
+								->where("customer_id = $customer_id")
+								->order('modify_at desc')
+								->select()) {
+					$this->assign('recipes', $recipes);		
+				}
+				
+				$this->display();
+			}
 		}
 	}
 	
@@ -113,6 +131,34 @@ class RecipeAction extends Action {
 				}
 			} else {
 				$this->error($Recipe->getError());
+			}
+		}
+	}
+	
+	public function comment() {
+		if ($this->isPost()) {
+			$RecipeComment = D('RecipeComment');
+			if ($RecipeComment->create()) {
+				$RecipeComment->modify_by = $_SESSION['user_name'];
+				if (empty($RecipeComment->recipe_comment_id)) {
+					$RecipeComment->create_by = $_SESSION['user_name'];
+					if ($recipe_comment_id = $RecipeComment->add()) {
+						$data['id'] = 'recipe_comment_id';
+						$data['value'] = $recipe_comment_id;
+						$this->ajaxReturn($data, 'Comment add succeed', 1);
+						//$this->success('Comment add succeed');
+					} else {
+						$this->error('Comment add failed');
+					}
+				} else {
+					if ($RecipeComment->save()) {
+						$this->success('Comment update succeed');
+					} else {
+						$this->error('Comment update failed');
+					}
+				}
+			} else {
+				$this->error($RecipeComment->getError());
 			}
 		}
 	}

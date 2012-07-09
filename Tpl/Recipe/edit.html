@@ -42,24 +42,40 @@
 			success: showResponse,
 			dataType: 'json'
 		});
+		
+		$('#recipe_comment_form').ajaxForm({
+			success: showResponse,
+			dataType: 'json'
+		});
 
-		$('#issue').click(function(){
+		$('#issue').click(function(event){
 			var now = new Date();
 			
 			$('#is_issued').val(1);
-			$('#issue_at').val(now.format("yyyy-mm-dd hh:MM:ss"));
+			$('#issue_at').val(now.format("yyyy-mm-dd HH:MM:ss"));
 			$('#issue_by').val('{$staff_name}');
 			
 			var contents = $('#contents').val();
 			var issueStamp = "Issued by: [{$staff_name}]  on: [" + now.format("dd/mm/yyyy") + "]\n---------------------------------------\n\n";
 			$('#contents').val(issueStamp + contents);
 			
+			$('#edit_recipe_form').submit();
+			
 			$('#edit_recipe_form .issued').attr('disabled', 'disabled');
 			$('#contents').css('background-color', '#FFFFFF');
 		});
 		
 		$('#inactive').click(function(){
+			$('#is_active').val(0);
 			
+			$('#edit_recipe_form').submit();
+			
+			$('#edit_recipe_form .inactived').attr('disabled', 'disabled');
+		});
+		
+		$('#customer_search').click(function(event){
+			event.preventDefault();
+			window.location = "__APP__/Customer/search";
 		});
 		
 		<if condition="$record.c_is_active eq '0'">
@@ -67,10 +83,10 @@
 		</if>
 		
 		<if condition="$record.r_is_active eq '0'">
-			$('#edit_recipe_form .inactive').attr('disabled', 'disabled');
+			$('#edit_recipe_form .inactived').attr('disabled', 'disabled');
 		</if>
 		
-		<if condition="$record.r_is_issued eq '1'">
+		<if condition="$record.is_issued eq '1'">
 			$('#edit_recipe_form .issued').attr('disabled', 'disabled');
 			$('#contents').css('background-color', '#FFFFFF');
 		</if>
@@ -78,6 +94,10 @@
 	
 	function showResponse(data) {
 		if (data.status == 1) {
+			var formElement = data.data;
+			if (formElement) {
+				$('#' + formElement['id']).val(formElement['value']);
+			}
 			slideBox(msg.text(data.info), 2000, 'green');
 		} else {
 			slideBox(msg.text(data.info), 2000, 'red');
@@ -93,7 +113,7 @@
 				Updated by: [{$record.c_modify_by}]
 				on: [{$record.c_modify_at|strtotime|date="d/m/Y",###}]
 			</div>
-			<h2>Customer<a style="margin-left: 20px;" href="__URL__/list/id/{$record.customer_id}">ID:[{$record.customer_id}]</a></h2>
+			<h2>Customer<a style="margin-left: 20px;" href="__URL__/lists/id/{$record.customer_id}">ID:[{$record.customer_id}]</a></h2>
 			<div class="panelbody">
 				<div class="main">
 					<label for="Firstname">
@@ -117,7 +137,7 @@
 				<div class="ctrl">					
 					<label class="float_right">
 						<input type="submit" value="Save" tabindex="5" class="btn" />
-						<input type="button" value="Customer Search" tabindex="6" class="btn" />
+						<input type="button" value="Back to search" tabindex="6" class="btn" id="customer_search" />
 					</label>
 				</div>
 			</div>
@@ -133,17 +153,17 @@
 			<div class="panelbody">
 				<div class="main">
 					<input class="hide" type="text" name="recipe_id" value="{$record.recipe_id}" />
-					<textarea style="width:100%;height:200px;" name="contents" id="contents" class="inactive issued">{$record.contents}</textarea>
+					<textarea style="width:100%;height:200px;" name="contents" id="contents" class="inactived issued">{$record.contents}</textarea>
 				</div>
 				<div class="ctrl">
 					<label class="float_right">					
-						<input type="submit" value="Save" tabindex="7" class="btn inactive issued" />
-						<input type="button" value="Print" tabindex="8" class="btn inactive" id="print" />
-						<input type="button" value="Issue" tabindex="9" class="btn inactive issued" id="issue" />
+						<input type="submit" value="Save" tabindex="7" class="btn inactived issued" />
+						<input type="button" value="Print" tabindex="8" class="btn inactived" id="print" />
+						<input type="button" value="Issue" tabindex="9" class="btn inactived issued" id="issue" />
 							<input type="text" value="{$record.is_issued}" name="is_issued" id="is_issued" class="hide" />
 							<input type="text" value="{$record.issue_at}" name="issue_at" id="issue_at" class="hide" />
 							<input type="text" value="{$record.issue_by}" name="issue_by" id="issue_by" class="hide" />
-						<input type="button" value="Inactive" tabindex="10" class="btn inactive issued" id="inactive" />
+						<input type="button" value="Inactive" tabindex="10" class="btn inactived issued" id="inactive" />
 							<input type="text" value="{$record.r_is_active}" name="is_active" id="is_active" class="hide" />
 						<input type="button" value="Copy into a new recipe" tabindex="11" class="btn" id="copy" />
 					</label>
@@ -162,7 +182,8 @@
 			<h2>Comment</h2>
 			<div class="panelbody">
 				<div class="main">
-					<input class="hide" type="text" name="recipe_comment_id" value="{$record.recipe_comment_id}" />
+					<input class="hide" type="text" name="recipe_comment_id" value="{$record.recipe_comment_id}" id="recipe_comment_id" />
+					<input class="hide" type="text" name="recipe_id" value="{$record.recipe_id}" />
 					<textarea style="width:100%;height:100px;" name="comment" id="comment">{$record.comment}</textarea>
 				</div>
 				<div class="ctrl">
