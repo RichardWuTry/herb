@@ -43,15 +43,20 @@ class RecipeAction extends Action {
 				$this->assign('staff_id', $_SESSION['user_id']);
 				$this->assign('staff_name', $_SESSION['user_name']);
 				
-				// if (isset($_GET['rid'])) {
-					// $recipe_id = $_GET['rid'];
-					// $Reci = M('Reci');
-					// if ($recipe = $Reci
-								// ->where("recipe_id = $recipe_id")
-								// ->find()) {
-						// $this->assign('recipe', $recipe);
-					// }
-				// }
+				if (isset($_GET['rid'])) {
+					$recipe_id = $_GET['rid'];
+					$Reci = M('Recipe');
+					if ($recipe = $Reci
+								->where("recipe_id = $recipe_id")
+								->field("contents")
+								->find()) {
+						$contents = $recipe['contents'];
+						if (strpos($contents,"Issued by: [") === 0) {
+							$contents = implode("\n", array_slice(explode("\n", $contents), 3));
+						}
+						$this->assign('contents', $contents);
+					}
+				}
 
 				$this->display();
 			}

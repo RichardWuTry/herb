@@ -78,6 +78,11 @@
 			window.location = "__APP__/Customer/search";
 		});
 		
+		$('#copy').click(function(event){
+			event.preventDefault();
+			window.location = "__URL__/add/cid/{$record.customer_id}/rid/{$record.recipe_id}";
+		});
+		
 		<if condition="$record.c_is_active eq '0'">
 			$('#edit_customer_form input').attr('disabled', 'disabled');
 		</if>
@@ -179,7 +184,7 @@
 					on: [{$record.rc_modify_at|strtotime|date="d/m/Y",###}]
 				</div>
 			</if>
-			<h2>Comment</h2>
+			<h2>Staff Comments</h2>
 			<div class="panelbody">
 				<div class="main">
 					<input class="hide" type="text" name="recipe_comment_id" value="{$record.recipe_comment_id}" id="recipe_comment_id" />
