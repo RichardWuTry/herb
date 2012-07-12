@@ -49,9 +49,11 @@
 	function showResponse(data) {
 		if (data.status == 1) {
 			var custs = data.data;
-			if (custs.length > 0) {
-				$('#customerList td').remove();
+			if (custs.length <= 0) {
+				slideBox(msg.text('Search no result'), 2000, 'red');
 			}
+			
+			$('#customerList td').remove();
 			
 			for (var i = 0; i < custs.length; i++) {
 				var tr = $('<tr>');
