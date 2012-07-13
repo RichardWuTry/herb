@@ -1,8 +1,8 @@
 <include file="./Tpl/Public/headstart.html" />
 <title>Recipe</title>
-<link rel="stylesheet" href="__PUBLIC__/css/common.css" />
-<link rel="stylesheet" href="__PUBLIC__/css/panel.css" />
-<link rel="stylesheet" href="__PUBLIC__/css/head_panel.TopRightBtn.css" />
+<link rel="stylesheet" href="__PUBLIC__/css/common.css" media="screen" />
+<link rel="stylesheet" href="__PUBLIC__/css/panel.css" media="screen" />
+<link rel="stylesheet" href="__PUBLIC__/css/head_panel.TopRightBtn.css" media="screen" />
 <style>
 	header, #wrapper {
 		margin: 0 auto;
@@ -27,6 +27,7 @@
 <script src="__PUBLIC__/javascript/InputValidate.js"></script>
 <script src="__PUBLIC__/javascript/jqTools.js"></script>
 <script src="__PUBLIC__/javascript/date.format.js"></script>
+<script src="__PUBLIC__/javascript/jquery.PrintArea.js_4.js"></script>
 <script>
 	var msg;
 
@@ -81,6 +82,19 @@
 		$('#copy').click(function(event){
 			event.preventDefault();
 			window.location = "__URL__/add/cid/{$record.customer_id}/rid/{$record.recipe_id}";
+		});
+		
+		$('#print').click(function(event){
+			event.preventDefault();
+			var now = new Date();
+			
+			var head = $('<h1 style="text-align:center;">Recipe Detail</h1>');
+			var staff = $('<p>').append('Staff: {$staff_name}');			
+			var printAt = $('<p>').append('Print at: ' + now.format("dd/mm/yyyy HH:MM:ss"));			
+			var recipe = $('#contents').clone();
+			
+			$('<div>').append(head).append(staff).append(printAt).append(recipe).printArea();
+			return false;
 		});
 		
 		<if condition="$record.c_is_active eq '0'">
