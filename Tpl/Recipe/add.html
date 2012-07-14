@@ -1,8 +1,9 @@
 <include file="./Tpl/Public/headstart.html" />
 <title>Create New Recipe</title>
-<link rel="stylesheet" href="__PUBLIC__/css/common.css" />
-<link rel="stylesheet" href="__PUBLIC__/css/panel.css" />
-<link rel="stylesheet" href="__PUBLIC__/css/head_panel.TopRightBtn.css" />
+<link rel="stylesheet" href="__PUBLIC__/css/common.css" media="screen" />
+<link rel="stylesheet" href="__PUBLIC__/css/panel.css" media="screen" />
+<link rel="stylesheet" href="__PUBLIC__/css/head_panel.TopRightBtn.css" media="screen" />
+<link rel="stylesheet" href="__PUBLIC__/css/recipe_print.css" media="print" />
 <style>
 	header, #wrapper {
 		margin: 0 auto;
@@ -27,6 +28,7 @@
 <script src="__PUBLIC__/javascript/InputValidate.js"></script>
 <script src="__PUBLIC__/javascript/jqTools.js"></script>
 <script src="__PUBLIC__/javascript/date.format.js"></script>
+<script src="__PUBLIC__/javascript/jquery.PrintArea.js_4.js"></script>
 <script>
 	var msg;
 
@@ -53,6 +55,24 @@
 		$('#customer_search').click(function(event){
 			event.preventDefault();
 			window.location = "__APP__/Customer/search";
+		});
+		
+		$('#print').click(function(event){
+			event.preventDefault();
+			var now = new Date();
+			
+			var header = $('<h1>Recipe Detail</h1><p>Dear {$customer.firstname} {$customer.surname},<br/></p>');
+			
+			var contents = $('<p>').append(nl2br($('#contents').val(), false));
+			
+			var footer = $('<p>Best wishs<br/>{$staff_name}<br/>' + now.format("dd/mm/yyyy HH:MM:ss") + '</p>');
+			
+			$('<div>').append(header)
+					.append(contents)
+					.append(footer)
+					.printArea();
+					
+			return false;
 		});
 		
 		<if condition="$customer.is_active eq '0'">

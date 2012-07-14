@@ -3,8 +3,7 @@
 <link rel="stylesheet" href="__PUBLIC__/css/common.css" media="screen" />
 <link rel="stylesheet" href="__PUBLIC__/css/panel.css" media="screen" />
 <link rel="stylesheet" href="__PUBLIC__/css/head_panel.TopRightBtn.css" media="screen" />
-<link rel="stylesheet" href="__PUBLIC__/css/common.css" media="print" />
-<link rel="stylesheet" href="__PUBLIC__/css/panel.css" media="print" />
+<link rel="stylesheet" href="__PUBLIC__/css/recipe_print.css" media="print" />
 <style>
 	header, #wrapper {
 		margin: 0 auto;
@@ -90,14 +89,17 @@
 			event.preventDefault();
 			var now = new Date();
 			
-			var head = $('<h1 style="text-align:center;">Recipe Detail</h1>');
-			var staff = $('<p>').append('Staff: {$staff_name}');			
-			var printAt = $('<p>').append('Print at: ' + now.format("dd/mm/yyyy HH:MM:ss"));			
-			var recipe = $('#contents').clone();
-			var rowCnt = recipe.val().split(/\n/).length + 5;
-			recipe.attr('rows', rowCnt.toString());
+			var header = $('<h1>Recipe Detail</h1><p>Dear {$record.firstname} {$record.surname},<br/></p>');
 			
-			$('<div>').append(head).append(staff).append(printAt).append(recipe).printArea();
+			var contents = $('<p>').append(nl2br($('#contents').val(), false));
+			
+			var footer = $('<p>Best wishs<br/>{$staff_name}<br/>' + now.format("dd/mm/yyyy HH:MM:ss") + '</p>');
+			
+			$('<div>').append(header)
+					.append(contents)
+					.append(footer)
+					.printArea();
+					
 			return false;
 		});
 		
