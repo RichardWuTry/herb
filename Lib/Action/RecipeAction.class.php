@@ -130,9 +130,9 @@ class RecipeAction extends Action {
 			if ($Recipe->create()) {
 				$Recipe->modify_by = $_SESSION['user_name'];
 				if ($Recipe->save()) {
-					$this->success('Recipe saved');
+					$this->success('Recipe updated');
 				} else {
-					$this->error('Recipe not updated');
+					$this->error('Recipe NOT updated');
 				}
 			} else {
 				$this->error($Recipe->getError());

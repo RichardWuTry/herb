@@ -34,9 +34,9 @@ class CustomerAction extends Action {
 			$Cust = D('Customer');
 			if ($Cust->create()) {
 				if ($Cust->save()) {
-					$this->success('Succeed save customer information');
+					$this->success('Customer information updated');
 				} else {
-					$this->error('Failed save customer information');
+					$this->error('Customer information NOT updated');
 				}
 			} else {
 				$this->error($Cust->getError());
