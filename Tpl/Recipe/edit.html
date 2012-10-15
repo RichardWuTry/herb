@@ -3,7 +3,6 @@
 <link rel="stylesheet" href="__PUBLIC__/css/common.css" media="screen" />
 <link rel="stylesheet" href="__PUBLIC__/css/panel.css" media="screen" />
 <link rel="stylesheet" href="__PUBLIC__/css/head_panel.TopRightBtn.css" media="screen" />
-<link rel="stylesheet" href="__PUBLIC__/css/recipe_print.css" media="print" />
 <style>
 	header, #wrapper {
 		margin: 0 auto;
@@ -22,13 +21,16 @@
 		color: #FFFFFF;
 		text-decoration:underline;
 	}
+	
+	#addHerb, .del_herb {
+		cursor: pointer;
+	}
 </style>
 <script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
 <script src="http://malsup.github.com/jquery.form.js"></script>
 <script src="__PUBLIC__/javascript/InputValidate.js"></script>
 <script src="__PUBLIC__/javascript/jqTools.js"></script>
 <script src="__PUBLIC__/javascript/date.format.js"></script>
-<script src="__PUBLIC__/javascript/jquery.PrintArea.js_4.js"></script>
 <script>
 	var msg;
 
@@ -65,14 +67,15 @@
 			
 			$('#edit_recipe_form .issued').attr('disabled', 'disabled');
 			$('#contents').css('background-color', '#FFFFFF');
+			
+			disableRecipeDetail();
 		});
 		
 		$('#inactive').click(function(){
-			$('#is_active').val(0);
-			
-			$('#edit_recipe_form').submit();
-			
+			$('#is_active').val(0);			
+			$('#edit_recipe_form').submit();			
 			$('#edit_recipe_form .inactived').attr('disabled', 'disabled');
+			disableRecipeDetail();
 		});
 		
 		$('#customer_search').click(function(event){
@@ -102,6 +105,47 @@
 					
 			return false;
 		});
+
+		
+		$('#addHerb').click(function(){
+			if (validateNonEmpty($('#herb')[0], msg[0], 'Please enter herb name', '')
+				&& validateNumber($('#volumn')[0], msg[0], 'Volumn must be a integer', '', 1, 1000000, true)) {
+				var recipeId = {$record.recipe_id};
+				var herbVal = $('#herb').val();
+				var volumnVal = $('#volumn').val();
+				
+				$('#herb').val('');
+				$('#volumn').val('');
+				
+				$.post(
+					"__URL__/addRecipeDetail",
+					{
+						recipe_id: recipeId,
+						herb: herbVal,
+						volumn: volumnVal
+					},
+					addRecipeDetailResponse,
+					"json"
+				);				
+			} else {
+				slideBox(msg, 2000, 'red');
+			}
+		});		
+		
+		$('.recipe_detail_ctrl').on('click', '.del_herb', function(){
+			var herbRowId = $(this).parent().parent('tr').prop('id');
+			var recipeDetailId = herbRowId.substr(herbRowId.indexOf('_')+1);
+			$.post(
+				"__URL__/delRecipeDetail",
+				{
+					recipe_detail_id: recipeDetailId
+				},
+				delRecipeDetailResponse,
+				"json"
+			);
+		});
+		
+		updateTotalVolumn();
 		
 		<if condition="$record.c_is_active eq '0'">
 			$('#edit_customer_form input').attr('disabled', 'disabled');
@@ -109,11 +153,13 @@
 		
 		<if condition="$record.r_is_active eq '0'">
 			$('#edit_recipe_form .inactived').attr('disabled', 'disabled');
+			disableRecipeDetail();
 		</if>
 		
 		<if condition="$record.is_issued eq '1'">
 			$('#edit_recipe_form .issued').attr('disabled', 'disabled');
 			$('#contents').css('background-color', '#FFFFFF');
+			disableRecipeDetail();
 		</if>
 	});
 	
@@ -127,6 +173,52 @@
 		} else {
 			slideBox(msg.text(data.info), 2000, 'red');
 		}
+	}
+	
+	function addRecipeDetailResponse(data) {
+		if (data.status == 1) {
+			var herbData = data.data;
+			if (herbData) {
+				var herbDetailRow = $('<tr id="herbRow_' + herbData['recipe_detail_id'] + '"></tr>')
+									.append('<td>' + herbData['herb'] + '</td>')
+									.append('<td class="herb_vol">' + herbData['volumn'] + '</td>')
+									.append('<td><img src="__PUBLIC__/images/delete.png" alt="Del Herb" class="del_herb"></td>');
+				herbDetailRow.insertBefore($('#insertBefore'));
+				updateTotalVolumn();
+			}
+		} else {
+			slideBox(msg.text(data.info), 2000, 'red');
+		}
+	}
+	
+	function delRecipeDetailResponse(data) {
+		if (data.status == 1) {
+			var herbRowId = '#herbRow_' + data.info;
+			$(herbRowId).remove();
+			updateTotalVolumn();
+		} else {
+			slideBox(msg.text(data.info), 2000, 'red');
+		}
+	}
+	
+	function updateTotalVolumn() {
+		var totalVolumn = 0;
+		$('.herb_vol').each(function(){
+			var singleVol = parseInt($(this).text());
+			if(isNaN(singleVol)) {
+			
+			} else {
+				totalVolumn += singleVol;
+			}
+		});
+		
+		$('#totalVolumn').text(totalVolumn);
+	}
+	
+	function disableRecipeDetail() {
+		$('.recipe_detail_ctrl').hide();
+		$('#herb').prop('disabled', true);
+		$('#volumn').prop('disabled', true);
 	}
 </script>
 <include file="./Tpl/Public/headend_bodystart_banner.html" />
@@ -178,7 +270,37 @@
 			<div class="panelbody">
 				<div class="main">
 					<input class="hide" type="text" name="recipe_id" value="{$record.recipe_id}" />
-					<textarea style="width:100%;" rows="10" name="contents" id="contents" class="inactived issued">{$record.contents}</textarea>
+					<span style="display:inline-block; width:410px; height:200px; overflow:auto; margin-right:10px; padding-right:20px;">
+						<table>
+							<tr>
+								<th>Herb</th>
+								<th>Volumn (ml)</th>
+								<th class="recipe_detail_ctrl"></th>
+							</tr>
+							<tr>
+								<td><input id="herb" class="text" type="text"></td>
+								<td><input id="volumn" class="text" type="text"></td>
+								<td class="recipe_detail_ctrl"><img id="addHerb" src="__PUBLIC__/images/add.png" alt="Add Herb"></td>
+							</tr>
+							<volist name="recipeDetail" id="herbRow">
+								<tr id="herbRow_{$herbRow['recipe_detail_id']}">
+									<td>{$herbRow['herb']}</td>
+									<td class="herb_vol">{$herbRow['volumn']}</td>
+									<td class="recipe_detail_ctrl"><img src="__PUBLIC__/images/delete.png" alt="Del Herb" class="del_herb"></td>
+								</tr>
+							</volist>
+							<tr id="insertBefore">
+								<td style="text-align:center;">
+									<strong>Total Volumn</strong>
+								</td>
+								<td id="totalVolumn">
+								</td>
+								<td class="recipe_detail_ctrl">
+								</td>
+							</tr>
+						</table>
+					</span>
+					<textarea style="width:480px;height:200px;" name="contents" id="contents" class="inactived issued">{$record.contents}</textarea>
 				</div>
 				<div class="ctrl">
 					<label class="float_right">					

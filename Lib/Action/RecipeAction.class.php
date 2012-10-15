@@ -116,6 +116,16 @@ class RecipeAction extends Action {
 										where
 											r.recipe_id = $recipe_id
 										limit 1")) {
+				if ($recipeDetail = $Model->query("select
+													recipe_detail_id,
+													herb,
+													volumn
+												from
+													recipe_detail rd
+												where
+													rd.recipe_id = $recipe_id")) {
+					$this->assign('recipeDetail', $recipeDetail);
+				}
 				$this->assign('record', $record[0]);
 				$this->assign('staff_id', $_SESSION['user_id']);
 				$this->assign('staff_name', $_SESSION['user_name']);
@@ -166,6 +176,43 @@ class RecipeAction extends Action {
 				$this->error($RecipeComment->getError());
 			}
 		}
+	}
+	
+	public function addRecipeDetail() {
+		if ($this->isPost()) {
+			$recipe_id = $_POST['recipe_id'];
+			$herb = $_POST['herb'];
+			$volumn = $_POST['volumn'];
+			
+			$RecipeDetail = M('RecipeDetail');
+			$RecipeDetail->recipe_id = $recipe_id;
+			$RecipeDetail->herb = $herb;
+			$RecipeDetail->volumn = $volumn;
+			$RecipeDetail->create_at = date("Y-m-d H:i:s");
+			$RecipeDetail->create_by = $_SESSION['user_name'];
+			$RecipeDetail->modify_by = $_SESSION['user_name'];
+			
+			if ($recipe_detail_id = $RecipeDetail->add()) {
+				$data['recipe_detail_id'] = $recipe_detail_id;
+				$data['herb'] = $herb;
+				$data['volumn'] = $volumn;
+				$this->ajaxReturn($data, 'Herb saved', 1);
+			} else {
+				$this->error('Herb NOT saved');
+			}
+		}
+	}
+	
+	public function delRecipeDetail() {
+		if ($this->isPost()) {
+			$recipe_detail_id = $_POST['recipe_detail_id'];
+			$RecipeDetail = M('RecipeDetail');
+			if ($RecipeDetail->delete($recipe_detail_id)) {
+				$this->success($recipe_detail_id);
+			} else {
+				$this->error('Herb NOT deleted');
+			}
+		}		
 	}
 }
 ?>
