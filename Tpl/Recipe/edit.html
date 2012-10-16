@@ -85,7 +85,15 @@
 		
 		$('#copy').click(function(event){
 			event.preventDefault();
-			window.location = "__URL__/add/cid/{$record.customer_id}/rid/{$record.recipe_id}";
+			var recipeId = {$record.recipe_id};
+			$.post(
+				"__URL__/copyRecipe",
+				{
+					recipe_id: recipeId
+				},
+				copyRecipeResponse,
+				"json"
+			)
 		});
 		
 		$('#print').click(function(event){
@@ -196,6 +204,14 @@
 			var herbRowId = '#herbRow_' + data.info;
 			$(herbRowId).remove();
 			updateTotalVolumn();
+		} else {
+			slideBox(msg.text(data.info), 2000, 'red');
+		}
+	}
+	
+	function copyRecipeResponse(data) {
+		if (data.status == 1) {
+			window.location = "__URL__/edit/rid/"+data.info;
 		} else {
 			slideBox(msg.text(data.info), 2000, 'red');
 		}

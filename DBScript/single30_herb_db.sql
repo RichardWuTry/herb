@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- 主机: localhost
--- 生成日期: 2012 年 10 月 15 日 17:04
+-- 生成日期: 2012 年 10 月 16 日 15:54
 -- 服务器版本: 5.5.8
 -- PHP 版本: 5.3.5
 
@@ -49,8 +49,8 @@ CREATE TABLE IF NOT EXISTS `recipe` (
   `recipe_id` int(11) NOT NULL AUTO_INCREMENT,
   `customer_id` int(11) NOT NULL,
   `contents` varchar(1000) NOT NULL,
-  `is_issued` tinyint(1) NOT NULL,
-  `is_active` tinyint(1) NOT NULL,
+  `is_issued` tinyint(1) NOT NULL DEFAULT '0',
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `issue_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `issue_by` varchar(40) NOT NULL,
   `create_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS `recipe` (
   `modify_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `modify_by` varchar(40) NOT NULL,
   PRIMARY KEY (`recipe_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=14 ;
 
 -- --------------------------------------------------------
 
@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS `recipe_detail` (
   `modify_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `modify_by` varchar(40) NOT NULL,
   PRIMARY KEY (`recipe_detail_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=15 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=29 ;
 
 -- --------------------------------------------------------
 

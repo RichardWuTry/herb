@@ -40,6 +40,8 @@
 
 	$(function(){
 		msg = $('#topSlideMsg');
+		
+		$('#contents').val('');
 	
 		$('#edit_customer_form').ajaxForm({
 			success: showResponse,
@@ -59,7 +61,15 @@
 		});
 		
 		$('#newRecipe').click(function(){
-			window.location = "__URL__/add/cid/{$customer.customer_id}";
+			var custId = {$customer.customer_id};
+			$.post(
+				"__URL__/addRecipe",
+				{
+					customer_id: custId
+				},
+				addRecipeResponse,
+				"json"
+			);
 		});
 		
 		$('#select').click(function(){
@@ -78,6 +88,14 @@
 	function showResponse(data) {
 		if (data.status == 1) {
 			slideBox(msg.text(data.info), 2000, 'green');
+		} else {
+			slideBox(msg.text(data.info), 2000, 'red');
+		}
+	}
+	
+	function addRecipeResponse(data) {
+		if (data.status == 1) {
+			window.location = "__URL__/edit/rid/"+data.info;
 		} else {
 			slideBox(msg.text(data.info), 2000, 'red');
 		}

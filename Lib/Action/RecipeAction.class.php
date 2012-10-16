@@ -70,7 +70,9 @@ class RecipeAction extends Action {
 				$Recipe->create_by = $_SESSION['user_name'];
 				$Recipe->modify_by = $_SESSION['user_name'];
 				if ($recipe_id = $Recipe->add()) {
-					redirect(__URL__."/edit/rid/$recipe_id");
+					$this->success($recipe_id);
+				} else {
+					$this->error('Recipe NOT created');
 				}
 			}
 		}
@@ -212,6 +214,49 @@ class RecipeAction extends Action {
 			} else {
 				$this->error('Herb NOT deleted');
 			}
+		}		
+	}
+	
+	public function copyRecipe() {
+		if ($this->isPost()) {
+			$recipeId = $_POST['recipe_id'];
+			$staff = $_SESSION['user_name'];
+			$Recipe = M('Recipe');
+			if ($copyData = $Recipe->where("recipe_id = $recipeId")
+									->field('customer_id, contents')
+									->find()) {
+				$copyData['create_by'] = $staff;
+				$copyData['modify_by'] = $staff;
+				$copyData['create_at'] = date("Y-m-d H:i:s");
+				
+				if ($newRecipeId = $Recipe->add($copyData)) {
+					$Recipe->execute("insert into 
+										recipe_detail
+										(
+											recipe_id,
+											herb,
+											volumn,
+											create_at,
+											create_by,
+											modify_by
+										)
+									select
+										$newRecipeId,
+										herb,
+										volumn,
+										now(),
+										'$staff',
+										'$staff'
+									from
+										recipe_detail
+									where
+										recipe_id = $recipeId");
+				
+					$this->success($newRecipeId);
+				}				
+			}
+			
+			$this->error('Recipe NOT copied');
 		}		
 	}
 }
