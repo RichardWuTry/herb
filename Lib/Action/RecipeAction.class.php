@@ -259,5 +259,54 @@ class RecipeAction extends Action {
 			$this->error('Recipe NOT copied');
 		}		
 	}
+	
+	public function printRecipe() {
+		if (isset($_GET['rid'])) {
+			$recipe_id = $_GET['rid'];
+			$Model = M();
+			if ($record = $Model->query("select
+											c.customer_id,
+											c.firstname,
+											c.surname,
+											c.phone,
+											c.email,
+											c.is_active as c_is_active,
+											c.modify_at as c_modify_at,
+											c.modify_by as c_modify_by,
+											
+											r.recipe_id,
+											r.contents,
+											r.is_issued,
+											r.is_active as r_is_active,
+											r.issue_at,
+											r.issue_by,
+											r.modify_at as r_modify_at,
+											r.modify_by as r_modify_by
+										from
+											customer c
+											inner join
+											recipe r
+											on
+												c.customer_id = r.customer_id
+										where
+											r.recipe_id = $recipe_id
+										limit 1")) {
+				if ($recipeDetail = $Model->query("select
+													recipe_detail_id,
+													herb,
+													volumn
+												from
+													recipe_detail rd
+												where
+													rd.recipe_id = $recipe_id")) {
+					$this->assign('recipeDetail', $recipeDetail);
+				}
+				$this->assign('record', $record[0]);
+				$this->assign('staffName', $_SESSION['user_name']);
+				$this->assign('printDate', date('d/m/Y H:i:s'));
+				$this->display();
+			}
+		}
+	}
 }
 ?>

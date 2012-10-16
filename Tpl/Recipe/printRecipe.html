@@ -1,0 +1,157 @@
+<include file="./Tpl/Public/headstart.html" />
+<title>Recipe</title>
+<link rel="stylesheet" href="__PUBLIC__/css/common.css"/>
+<link rel="stylesheet" href="__PUBLIC__/css/panel.css"/>
+<style>
+	header, #wrapper {
+		margin: 0 auto;
+		width: 960px;
+	}
+	
+	#wrapper {
+		clear: both;
+	}
+	
+	table th {
+		text-align: left;
+	}
+	
+	#recipeContents {
+		display:inline-block; 
+		width:480px; 
+		min-height:200px; 
+		vertical-align:top; 
+		border:1px dotted;
+	}
+	
+	#printCtrl {
+		clear: both;
+		margin-top: 10px;
+		margin-bottom:20px;
+		text-align: center;
+	}
+	
+	#printCtrl .btn {
+		background-color: #F0F0F0;
+		border-color: #EBEBEB;
+		border-radius: 4px 4px 4px 4px;
+		border-style: none none solid;
+		border-width: medium medium 1px;
+		box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+		color: #333333;
+		cursor: pointer;
+		font-size: 14px;
+		font-weight: bold;
+		height: 34px;
+		margin-left: 1px;
+		overflow: visible;
+		padding: 0 20px;
+		position: relative;
+		text-shadow: 1px 1px 0 #FFFFFF;
+		top: 1px;
+	}
+</style>
+<script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+<script>
+	$(function(){
+		updateTotalVolumn();
+		
+		$('#print').click(function(){
+			window.print();
+		});
+		
+		$('#back').click(function(){
+			window.location = "__URL__/edit/rid/{$record.recipe_id}";
+		});
+	});
+	
+	function updateTotalVolumn() {
+		var totalVolumn = 0;
+		$('.herb_vol').each(function(){
+			var singleVol = parseInt($(this).text());
+			if(isNaN(singleVol)) {
+			
+			} else {
+				totalVolumn += singleVol;
+			}
+		});
+		
+		$('#totalVolumn').text(totalVolumn);
+	}
+</script>
+<include file="./Tpl/Public/headend_bodystart_banner.html" />
+<div id="wrapper">
+	<head style="height:180px;">
+		<img src="__PUBLIC__/images/MrVitamins1.png" alt="Slogan">
+	</head>
+	<div class="panel_wrapper" style="margin-top:0;">
+		<h2>Basic Information</h2>
+		<div class="panelbody">
+			<div class="main">
+				<table id="basicInfo">
+					<tr>
+						<th>Customer Name</th>
+						<td>{$record.firstname}&nbsp;{$record.surname}</td>
+						<th>Mv Staff</th>
+						<td>{$staffName}</td>
+					</tr>
+					<tr>
+						<th>Phone</th>
+						<td>{$record.phone}</td>
+						<th>Issue Date</th>
+						<td>{$record.issue_at|strtotime|date="d/m/Y",###}</td>
+					</tr>
+					<tr>
+						<th>Email</th>
+						<td>{$record.email}</td>
+						<td></td>
+						<td></td>
+					</tr>
+				</table>				
+			</div>
+		</div>
+	</div>
+	<div class="panel_wrapper">
+		<h2>Recipe Contents</h2>
+		<div class="panelbody">
+			<div class="main">
+				<span style="display:inline-block; width:430px; margin-right:10px;">
+					<table>
+						<tr>
+							<th>Herb</th>
+							<th>Volumn (ml)</th>
+						</tr>
+						<volist name="recipeDetail" id="herbRow">
+							<tr id="herbRow_{$herbRow['recipe_detail_id']}">
+								<td>{$herbRow['herb']}</td>
+								<td class="herb_vol">{$herbRow['volumn']}</td>
+							</tr>
+						</volist>
+						<tr id="insertBefore">
+							<td>
+								<strong>Total Volumn</strong>
+							</td>
+							<td id="totalVolumn">
+							</td>
+						</tr>
+					</table>
+				</span>
+				<span id="recipeContents">{$record.contents|nl2br|str_replace='  ','&nbsp;',###}</span>
+			</div>
+		</div>
+	</div>
+	<div>
+		<p><strong>Notice:</strong></p>
+		<p>Herb mixes cannot be pre-ordered.</p>
+		<p>All herb mixes are prepared when the customer is on site.</p>
+	</div>
+	<div style="float:right;">
+		<span>{$printDate}</span>
+	</div>
+	<div id="printCtrl">
+		<input type="button" value="Print" id="print" class="btn"/>
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<input type="button" value="Back" id="back" class="btn"/>
+	</div>
+</div>
+<include file="./Tpl/Public/footer_bodyend.html" />

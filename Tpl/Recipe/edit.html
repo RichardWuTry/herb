@@ -98,20 +98,7 @@
 		
 		$('#print').click(function(event){
 			event.preventDefault();
-			var now = new Date();
-			
-			var header = $('<h1>Recipe Detail</h1><p>Dear {$record.firstname} {$record.surname},<br/></p>');
-			
-			var contents = $('<p>').append(nl2br($('#contents').val(), false));
-			
-			var footer = $('<p>Best wishs<br/>{$staff_name}<br/>' + now.format("dd/mm/yyyy HH:MM:ss") + '</p>');
-			
-			$('<div>').append(header)
-					.append(contents)
-					.append(footer)
-					.printArea();
-					
-			return false;
+			window.location = "__URL__/printRecipe/rid/{$record.recipe_id}";
 		});
 
 		
