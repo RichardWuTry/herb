@@ -256,7 +256,7 @@
 				</div>
 				<div class="ctrl">					
 					<label class="float_right">
-						<input type="submit" value="Save" tabindex="5" class="btn" />
+						<input type="submit" value="Save" tabindex="5" class="btn" />&nbsp;
 						<input type="button" value="Back to search" tabindex="6" class="btn" id="customer_search" />
 					</label>
 				</div>
@@ -269,7 +269,7 @@
 				Updated by: [{$record.r_modify_by}]
 				on: [{$record.r_modify_at|strtotime|date="d/m/Y",###}]
 			</div>
-			<h1>Recipe</h1>
+			<h1>Recipe<strong style="margin-left: 20px;">ID:[{$record.recipe_id}]</strong></h1>
 			<div class="panelbody">
 				<div class="main">
 					<input class="hide" type="text" name="recipe_id" value="{$record.recipe_id}" />
@@ -277,7 +277,7 @@
 						<table>
 							<tr>
 								<th>Herb</th>
-								<th>Volumn (ml)</th>
+								<th>Volume (ml)</th>
 								<th class="recipe_detail_ctrl"></th>
 							</tr>
 							<tr>
@@ -294,7 +294,7 @@
 							</volist>
 							<tr id="insertBefore">
 								<td style="text-align:center;">
-									<strong>Total Volumn</strong>
+									<strong>Total Volume</strong>
 								</td>
 								<td id="totalVolumn">
 								</td>
@@ -307,13 +307,13 @@
 				</div>
 				<div class="ctrl">
 					<label class="float_right">					
-						<input type="submit" value="Save" tabindex="7" class="btn inactived issued" />
-						<input type="button" value="Print" tabindex="8" class="btn inactived" id="print" />
-						<input type="button" value="Issue" tabindex="9" class="btn inactived issued" id="issue" />
+						<input type="submit" value="Save" tabindex="7" class="btn inactived issued" />&nbsp;
+						<input type="button" value="Print" tabindex="8" class="btn inactived" id="print" />&nbsp;
+						<input type="button" value="Issue" tabindex="9" class="btn inactived issued" id="issue" />&nbsp;
 							<input type="text" value="{$record.is_issued}" name="is_issued" id="is_issued" class="hide" />
 							<input type="text" value="{$record.issue_at}" name="issue_at" id="issue_at" class="hide" />
 							<input type="text" value="{$record.issue_by}" name="issue_by" id="issue_by" class="hide" />
-						<input type="button" value="Inactive" tabindex="10" class="btn inactived issued" id="inactive" />
+						<input type="button" value="Inactive" tabindex="10" class="btn inactived issued" id="inactive" />&nbsp;
 							<input type="text" value="{$record.r_is_active}" name="is_active" id="is_active" class="hide" />
 						<input type="button" value="Copy into a new recipe" tabindex="11" class="btn" id="copy" />
 					</label>

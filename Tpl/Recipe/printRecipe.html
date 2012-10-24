@@ -57,7 +57,9 @@
 		updateTotalVolumn();
 		
 		$('#print').click(function(){
+			$('#printCtrl').hide();
 			window.print();
+			$('#printCtrl').show();			
 		});
 		
 		$('#back').click(function(){
@@ -85,20 +87,20 @@
 		<img src="__PUBLIC__/images/MrVitamins1.png" alt="Slogan">
 	</head>
 	<div class="panel_wrapper" style="margin-top:0;">
-		<h2>Basic Information</h2>
+		<h2>Communication Information</h2>
 		<div class="panelbody">
 			<div class="main">
 				<table id="basicInfo">
 					<tr>
 						<th>Customer Name</th>
-						<td>{$record.firstname}&nbsp;{$record.surname}</td>
-						<th>Mv Staff</th>
-						<td>{$staffName}</td>
+						<td>{$record.firstname|ucfirst}&nbsp;{$record.surname|ucfirst}</td>
+						<th>MV Staff</th>
+						<td>{$staffName|ucfirst}</td>
 					</tr>
 					<tr>
 						<th>Phone</th>
 						<td>{$record.phone}</td>
-						<th>Issue Date</th>
+						<th>Date of Issue</th>
 						<td>{$record.issue_at|strtotime|date="d/m/Y",###}</td>
 					</tr>
 					<tr>
@@ -112,14 +114,14 @@
 		</div>
 	</div>
 	<div class="panel_wrapper">
-		<h2>Recipe Contents</h2>
+		<h2>Recipe Contents<strong style="margin-left: 20px;">ID:[{$record.recipe_id}]</strong></h2>
 		<div class="panelbody">
 			<div class="main">
 				<span style="display:inline-block; width:430px; margin-right:10px;">
 					<table>
 						<tr>
 							<th>Herb</th>
-							<th>Volumn (ml)</th>
+							<th>Volume (ml)</th>
 						</tr>
 						<volist name="recipeDetail" id="herbRow">
 							<tr id="herbRow_{$herbRow['recipe_detail_id']}">
@@ -129,7 +131,7 @@
 						</volist>
 						<tr id="insertBefore">
 							<td>
-								<strong>Total Volumn</strong>
+								<strong>Total Volume</strong>
 							</td>
 							<td id="totalVolumn">
 							</td>
