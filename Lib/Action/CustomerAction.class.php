@@ -19,10 +19,16 @@ class CustomerAction extends Action {
 			$Customer = D('Customer');
 			if ($Customer->create()) {
 				if ($customer_id = $Customer->add()) {
-					$this->success($customer_id);
-				} else {
-					$this->error('Save Failed');
-				}
+					$Recipe = M('Recipe');
+					$Recipe->customer_id = $customer_id;
+					$Recipe->create_at = date("Y-m-d H:i:s");
+					$Recipe->create_by = $_SESSION['user_name'];
+					$Recipe->modify_by = $_SESSION['user_name'];
+					if ($recipe_id = $Recipe->add()) {
+						$this->success($recipe_id);
+					} 
+				}				
+				$this->error('Save Failed');
 			} else {
 				$this->error($Customer->getError());
 			}

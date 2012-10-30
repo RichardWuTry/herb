@@ -29,6 +29,14 @@
 	tr.selected {
 		background-color: #FFFFA0;
 	}
+	
+	#contents {
+		background-color:#FFFFFF;
+		color: #000000;
+		width:480px; 
+		min-height:200px; 
+		vertical-align:top; 
+	}
 </style>
 <script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
 <script src="http://malsup.github.com/jquery.form.js"></script>
@@ -39,9 +47,9 @@
 	var msg;
 
 	$(function(){
-		msg = $('#topSlideMsg');
-		
-		$('#contents').val('');
+		msg = $('#topSlideMsg');	
+
+		clearPreview();
 	
 		$('#edit_customer_form').ajaxForm({
 			success: showResponse,
@@ -54,10 +62,24 @@
 		});
 		
 		$('#recipeList tr.recipe_row').click(function(){
-			$('#recipeList tr').removeClass('selected');
-			$(this).addClass('selected');
+			if (!$(this).hasClass('selected')) {
+				$('#recipeList tr').removeClass('selected');
+				$(this).addClass('selected');
+				clearPreview();
 			
-			$('#contents').val($(this).children('td.content:first').text());
+				$('#contents').val($(this).children('td.content:first').text());
+				
+				var trId = $(this).prop('id');
+				var recipeId = parsePkId(trId);
+				$.post(
+					"__URL__/getRecipeDetail",
+					{
+						rid: recipeId
+					},
+					getRecipeDetailResponse,
+					"json"
+				);
+			}
 		});
 		
 		$('#newRecipe').click(function(){
@@ -100,6 +122,25 @@
 			slideBox(msg.text(data.info), 2000, 'red');
 		}
 	}
+	
+	function getRecipeDetailResponse(data) {
+		if (data.status == 1) {		
+			var herbDetail = data.info;
+			var totalVolume = 0;
+			for(var i = 0; i < herbDetail.length; i++) {
+				totalVolume += parseInt(herbDetail[i]["volumn"]);
+				$('<tr class="herbRow"><td>' + herbDetail[i]["herb"] + '</td><td>' + herbDetail[i]["volumn"] + '</td></tr>')
+					.insertBefore($('#insertBefore'));
+			}
+			$('#totalVolumn').text(totalVolume);
+		} 
+	}
+	
+	function clearPreview() {
+		$('tr.herbRow').remove();
+		$('#totalVolumn').text(0);
+		$('#contents').val('');
+	}
 </script>
 <include file="./Tpl/Public/headend_bodystart_banner.html" />
 <div id="wrapper">
@@ -133,31 +174,33 @@
 				</div>
 				<div class="ctrl">					
 					<label class="float_right">
-						<input type="submit" value="Save" tabindex="5" class="btn" />
+						<input type="submit" value="Save" tabindex="5" class="btn" />&nbsp;
 						<input type="button" value="Back to search" tabindex="6" class="btn" id="customer_search" />
 					</label>
 				</div>
 			</div>
 		</form>
 	</div>
-	<div class="panel_wrapper" style="float:left; width: 450px;">
+	<div class="panel_wrapper">
 		<h2>Recipe List</h2>
 		<div class="panelbody" style="max-height:350px;">
 			<table id="recipeList">
 				<tr>
-					<th class="hide">recipe_id</th>
+					<th>recipe_id</th>
 					<th>Last updated on</th>
-					<th>By</th>
+					<th>Updated By</th>
 					<th>Issued?</th>
+					<th>Issued on</th>
+					<th>Issued By</th>					
 					<th class="hide">contents</th>
 				</tr>
 		<volist name="recipes" id="r">
 			<if condition="$r.is_active eq '0'">
-				<tr class="inactive recipe_row">
+				<tr class="inactive recipe_row" id="recipe_{$r.recipe_id}">
 			<else />
-				<tr class="recipe_row">
+				<tr class="recipe_row" id="recipe_{$r.recipe_id}">
 			</if>
-					<td class="hide">{$r.recipe_id}</td>
+					<td>{$r.recipe_id}</td>
 					<td>{$r.modify_at|strtotime|date="d/m/Y",###}</td>
 					<td>{$r.modify_by}</td>
 					<td>
@@ -167,9 +210,13 @@
 							No
 						</if>
 					</td>
-					<td class="hide content">
-						{$r.contents}
+					<td>
+						<if condition="$r.is_issued eq '1'">
+							{$r.issue_at|strtotime|date="d/m/Y",###}
+						</if>					
 					</td>
+					<td>{$r.issue_by}</td>
+					<td class="hide content">{$r.contents}</td>
 				</tr>
 		</volist>
 			</table>
@@ -180,11 +227,26 @@
 			</div>
 		</div>
 	</div>
-	<div class="panel_wrapper" style="float:right; width: 495px;">
+	<div class="panel_wrapper">
 		<h2>Preview</h2>
 		<div class="panelbody">
 			<div class="main">
-				<textarea style="width:100%;height:300px;background-color:#FFFFFF;" disabled="disabled" id="contents"></textarea>
+				<span style="display:inline-block; width:430px; margin-right:10px;">
+					<table>
+						<tr>
+							<th>Herb</th>
+							<th>Volume (ml)</th>
+						</tr>
+						<tr id="insertBefore">
+							<td>
+								<strong>Total Volume</strong>
+							</td>
+							<td id="totalVolumn">
+							</td>
+						</tr>
+					</table>
+				</span>
+				<textarea disabled="disabled" id="contents"></textarea>
 			</div>
 			<div class="ctrl">
 				<label class="float_right">

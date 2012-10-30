@@ -66,6 +66,7 @@
 			$('#edit_recipe_form').submit();
 			
 			$('#edit_recipe_form .issued').attr('disabled', 'disabled');
+			$('#print').prop('disabled', false);
 			$('#contents').css('background-color', '#FFFFFF');
 			
 			disableRecipeDetail();
@@ -104,7 +105,7 @@
 		
 		$('#addHerb').click(function(){
 			if (validateNonEmpty($('#herb')[0], msg[0], 'Please enter herb name', '')
-				&& validateNumber($('#volumn')[0], msg[0], 'Volumn must be a integer', '', 1, 1000000, true)) {
+				&& validateNumber($('#volumn')[0], msg[0], 'Please enter volume as number', '', 1, 1000000, true)) {
 				var recipeId = {$record.recipe_id};
 				var herbVal = $('#herb').val();
 				var volumnVal = $('#volumn').val();
@@ -154,6 +155,7 @@
 		<if condition="$record.is_issued eq '1'">
 			$('#edit_recipe_form .issued').attr('disabled', 'disabled');
 			$('#contents').css('background-color', '#FFFFFF');
+			$('#print').prop('disabled', false);
 			disableRecipeDetail();
 		</if>
 	});
@@ -269,7 +271,11 @@
 				Updated by: [{$record.r_modify_by}]
 				on: [{$record.r_modify_at|strtotime|date="d/m/Y",###}]
 			</div>
-			<h1>Recipe<strong style="margin-left: 20px;">ID:[{$record.recipe_id}]</strong></h1>
+			<h1>
+				Herbal Formula
+				<strong style="margin-left: 20px;">ID:[{$record.recipe_id}]</strong>
+				<strong style="margin-left: 230px;">Directions for use</strong>
+			</h1>
 			<div class="panelbody">
 				<div class="main">
 					<input class="hide" type="text" name="recipe_id" value="{$record.recipe_id}" />
@@ -308,7 +314,7 @@
 				<div class="ctrl">
 					<label class="float_right">					
 						<input type="submit" value="Save" tabindex="7" class="btn inactived issued" />&nbsp;
-						<input type="button" value="Print" tabindex="8" class="btn inactived" id="print" />&nbsp;
+						<input type="button" value="Print" tabindex="8" class="btn inactived" id="print" disabled="disabled" />&nbsp;
 						<input type="button" value="Issue" tabindex="9" class="btn inactived issued" id="issue" />&nbsp;
 							<input type="text" value="{$record.is_issued}" name="is_issued" id="is_issued" class="hide" />
 							<input type="text" value="{$record.issue_at}" name="issue_at" id="issue_at" class="hide" />

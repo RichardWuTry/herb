@@ -308,5 +308,20 @@ class RecipeAction extends Action {
 			}
 		}
 	}
+	
+	public function getRecipeDetail() {
+		if ($this->isPost()) {
+			$recipe_id = $_POST['rid'];
+			$RecipeDetail = M('RecipeDetail');
+			if ($detail = $RecipeDetail
+							->where("recipe_id = $recipe_id")
+							->field("herb, volumn")
+							->select()){
+				$this->success($detail);					
+			} else {
+				$this->error();
+			}
+		}
+	}
 }
 ?>
