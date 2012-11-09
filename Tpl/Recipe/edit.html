@@ -179,7 +179,7 @@
 				var herbDetailRow = $('<tr id="herbRow_' + herbData['recipe_detail_id'] + '"></tr>')
 									.append('<td>' + herbData['herb'] + '</td>')
 									.append('<td class="herb_vol">' + herbData['volumn'] + '</td>')
-									.append('<td><img src="__PUBLIC__/images/delete.png" alt="Del Herb" class="del_herb"></td>');
+									.append('<td class="recipe_detail_ctrl"><img src="__PUBLIC__/images/delete.png" alt="Del Herb" class="del_herb"></td>');
 				herbDetailRow.insertBefore($('#insertBefore'));
 				updateTotalVolumn();
 			}
